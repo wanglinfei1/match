@@ -1,0 +1,38 @@
+@import "variable.styl"
+html
+  font-size:50px;
+body, html
+  line-height: 1
+  font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif, 'Droid Sans Fallback'
+  user-select: none
+  -webkit-tap-highlight-color: transparent
+  background: $color-background
+  color: $color-text
+  width:100%
+  height:100%
+body{
+  max-width: 850px;
+}
+.dataLayer .vux-no-group-title{
+  margin-top:0;
+}
+.dataLayer .weui-cells{
+  position relative;
+  top:50%;
+  margin-top:-80px;
+}
+*{
+  -webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+  touch-callout:none;
+  -webkit-user-select:none; /*webkit浏览器*/
+  -khtml-user-select:none; /*早期浏览器*/
+  -moz-user-select:none;/*火狐*/
+  -ms-user-select:none; /*IE10*/
+  user-select:none;
+}
+input {
+  -webkit-user-select:auto; /*webkit浏览器*/
+  user-select:auto;
+}
+
+
