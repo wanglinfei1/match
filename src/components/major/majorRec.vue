@@ -12,10 +12,10 @@
                 swHeight="41px"
                 :currentIndex="currentIndex"></switches>
       <div class="recordList" ref="recordList">
-        <Scroll :data="operationRec" :scrollToEndFlag="scrollToEndFlag"
+        <div :data="operRec" :scrollToEndFlag="scrollToEndFlag"
                 class="scroll" ref="scroll1" v-if="currentIndex == 0">
           <ul class="recList1">
-            <li v-for = "(item,index) in operationRec"
+            <li v-for = "(item,index) in operRec"
                 :style="{color:item.itemType&&(item.itemType == 1?itemColor[radio1].color:itemColor[radio2].color)}"
                 :key="index">
               <p class="time">
@@ -31,8 +31,8 @@
                  v-else="item.type == 'start'"></i>
             </li>
           </ul>
-        </Scroll>
-        <Scroll :data="scoreOperRec" :scrollToEndFlag="scrollToEndFlag"
+        </div>
+        <div :data="scoreOperRec" :scrollToEndFlag="scrollToEndFlag"
                 class="scroll" ref="scroll2"  v-if="currentIndex == 1">
           <ul class="recList2">
             <li v-for = "(item,index) in scoreOperRec"
@@ -52,8 +52,8 @@
                  v-else="item.type == 'start'"></i>
             </li>
           </ul>
-        </Scroll>
-        <Scroll :data="foulOperRec" :scrollToEndFlag="scrollToEndFlag"
+        </div>
+        <div :data="foulOperRec" :scrollToEndFlag="scrollToEndFlag"
                 class="scroll" ref="scroll3" v-if="currentIndex == 2">
           <ul class="recList3">
               <li v-for = "(item,index) in foulOperRec"
@@ -73,7 +73,7 @@
                    v-else="item.type == 'start'"></i>
               </li>
             </ul>
-        </Scroll>
+        </div>
       </div>
     </div>
   </transition>
@@ -85,7 +85,7 @@
   import Switches from '../../base/switches/switches.vue'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import {formatTime} from '../../common/js/util'
-  import {itemColor,sectionArr} from '../../common/js/config'
+  import {itemColor,sectionArr,matchLength} from '../../common/js/config'
   export default {
     data() {
       return {
@@ -97,7 +97,7 @@
         operRecTab:['全部','得分','犯规'],
         currentIndex:0,
         formatTime:formatTime,
-        scrollToEndFlag:true
+        scrollToEndFlag:false
       }
     },
     computed: {
@@ -106,6 +106,13 @@
         'radio2',
         'operationRec'
       ]),
+      operRec() {
+        var operationRec = this.operationRec.slice();
+        operationRec.sort(function(n,m){
+          return ((m.section -1)*matchLength*60+m.time) - ((n.section -1)*matchLength*60+n.time)
+        })
+        return operationRec;
+      },
       scoreOperRec(){
         var operationRec = this.operationRec;
         var scoreOperRec = [];
@@ -114,6 +121,9 @@
             scoreOperRec.push(operationRec[i])
           }
         }
+        scoreOperRec.sort(function(n,m){
+          return ((m.section -1)*matchLength*60+m.time) - ((n.section -1)*matchLength*60+n.time)
+        })
         return scoreOperRec;
       },
       foulOperRec(){
@@ -124,6 +134,9 @@
             foulOperRec.push(operationRec[i])
           }
         }
+        foulOperRec.sort(function(n,m){
+          return ((m.section -1)*matchLength*60+m.time) - ((n.section -1)*matchLength*60+n.time)
+        })
         return foulOperRec;
       }
     },
@@ -180,7 +193,7 @@
     height:40px;
   }
   .scroll{
-    height: 100%; overflow: hidden;
+    height: 100%; overflow: auto;
   }
   .recordList ul li .del{
     line-height:40px;

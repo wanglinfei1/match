@@ -9,7 +9,7 @@
           <div class="setting" :class="{active: currentIndex == 0}">
             <ul>
               <li @click="dataLayerShow"><p>比赛时间</p><span>{{matchStartTime}}</span></li>
-              <li><p>比赛地点</p><input type="text" value="洛克公园"></li>
+              <li><p>比赛地点</p><input type="text"  v-model="address"></li>
               <li @click="operTypeShow"><p>统计模式</p><span>{{operType==1?'标准版':'专业版'}}</span></li>
             </ul>
             <el-layer ref="dataLayer"
@@ -37,6 +37,7 @@
                      @changeRadio="changeRadio"
                      @inputChange="inputChange"
                      @changeLineUp="changeLineUp"
+                     @waiverFn="waiverFn"
                      @addPlayer="addPlayer"></itemSet>
           </div>
           <div class="item2" :class="{active: currentIndex == 2}">
@@ -48,6 +49,7 @@
                      @changeLineUp="changeLineUp"
                      @inputChange="inputChange"
                      @delePlayer="delePlayer"
+                     @waiverFn="waiverFn"
                      @addPlayer="addPlayer"></itemSet>
           </div>
         </div>
@@ -63,7 +65,7 @@
   import itemSet from './itemSet'
   import {mapGetters,mapMutations,mapActions} from 'vuex'
   import Player from '../../common/js/player'
-  import {copy,formatDate,filterFn} from  '../../common/js/util'
+  import {copy,formatDate,filterFn,debounce} from  '../../common/js/util'
   import {data} from '../../common/js/data'
   import {loadStorage,setStorage} from '../../common/js/cache'
   import {setOperRecMixin} from '../../common/js/mixin'
@@ -79,7 +81,8 @@
         nowTime:'',
         currentIndex:0,
         itemType1:1,
-        itemType2:2
+        itemType2:2,
+        address:data.address
       }
     },
     computed: {
@@ -115,9 +118,17 @@
       this.setOperRec(operationRec);
       this.setItemName(data.itemName)
       this.setMatchStartTime(matchStartTime)
+      this.setSection(section)
     },
-    mounted(){},
+    mounted(){
+      this.$watch('address',debounce(function(newVal){
+        console.log(newVal)
+      },800))
+    },
     methods:{
+      waiverFn(itemType){
+        console.log(itemType+'弃权')
+      },
       changeRadio(item,index,itemType){
         this.setRadio({radio:index,itemType:itemType})
       },
@@ -201,7 +212,8 @@
         'setRadio':'SET_RADIO',
         'setOperRec':'SET_OPERREC',
         'setItemName':'SET_ITEMNAME',
-        'setMatchStartTime':'SET_MATCH_START_TIME'
+        'setMatchStartTime':'SET_MATCH_START_TIME',
+        'setSection':'SET_SECTION'
       }),
       ...mapActions([
         'addPlayerAct',

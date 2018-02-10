@@ -34,7 +34,7 @@
       <p @click="addPlayer">+ 添加球员</p>
     </div>
     <div class="waiver">
-      <p>弃权</p>
+      <p @click="waiverFn">弃权</p>
     </div>
     <p class="Notes">注：弃权比分默认20：0，弃权积0分</p>
     <el-layer ref="layer" @confirm="configAdd" :text="confirmText" confirmBtnText="确定">
@@ -107,6 +107,9 @@
       },
       selectItem(item, index) {
         this.$emit('select', item, index,this.itemType)
+      },
+      waiverFn(){
+        this.$emit('waiverFn',this.itemType)
       }
     },
     components:{

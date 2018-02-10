@@ -9,5 +9,6 @@ export const data = {
   radio2: 1,
   matchTime:{},
   itemName:['勇士', '骑士'],
-  matchStartTime:'2018-02-06 10:30'
+  matchStartTime:'2018-02-06 10:30',
+  address:'林肯公园'
 }

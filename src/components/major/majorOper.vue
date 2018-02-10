@@ -31,7 +31,7 @@
                   <li v-for="(item,index) in itemPlayer1"
                       v-if="item.lineUp"
                       :class="{selectActive:selActive == '1-'+(index+1)+''}"
-                      @click="selectActive(1,index+1)"
+                      @click.prevent="selectActive(1,index+1)"
                       v-longtap="{fn:showDataDet,it:item,name:'longTab',index:'1-'+(index+1)+''}"
                       :player_id="item.id"
                       :key="index">
@@ -51,7 +51,7 @@
             <ul>
               <li class="li1">
                 <span class="bgColor">{{score1}}</span>
-                <span @click="timeClick">{{formatTime(nowMatchTime)}}</span>
+                <span @click.prevent="timeClick">{{formatTime(nowMatchTime)}}</span>
                 <span v-swiperight="nextSection"
                       v-swipeleft="preSection">{{sectionArr[section-1]}}</span>
                 <span class="bgColor">{{score2}}</span>
@@ -69,16 +69,16 @@
                 <span v-for="(it,i) in item"
                       v-if="index==2&&i!=0"
                       :class="{bgRed:i==1}"
-                      @click="operationClick(index,i,it)"
+                      @click.prevent="operationClick(index,i,it)"
                       :key="i">{{it.name}}</span>
                 <span v-for="(it,i) in item"
                       v-if="index!=2"
                       :class="{bgRed:index==1&&i==3}"
-                      @click="operationClick(index,i,it)"
+                      @click.prevent="operationClick(index,i,it)"
                       :key="i">{{it.name}}</span>
                 <div class="liFoul" v-if="index==2" v-show="liFoul" ref="liFoul">
-                  <b @click="liFoulHide">返回</b>
-                  <b @click="operationClick(2,0,itDet)" v-for="itDet in item[0].foulDet">{{itDet.name}}</b>
+                  <b v-tap="liFoulHide">返回</b>
+                  <b @click.prevent="operationClick(2,0,itDet)" v-for="itDet in item[0].foulDet">{{itDet.name}}</b>
                 </div>
               </li>
               <li v-for="(item,index) in operation"
@@ -101,11 +101,11 @@
                     <i class="iconfont icon-shanchu"></i>
                   </b>
                 </div>
-                <span @click="operationClick(index,1,item[1])">{{item[1].name}}</span>
+                <span @click.prevent="operationClick(index,1,item[1])">{{item[1].name}}</span>
                 <div class="liFoul" v-show="liPause" ref="liPause">
-                  <b @click="liPauseHide">返回</b>
+                  <b v-tap="liPauseHide">返回</b>
                   <b v-for="itDet in item[0].pauseDet"
-                     @click="operationClick(index,0,itDet)">{{itDet.time}}</b>
+                     @click.prevent="operationClick(index,0,itDet)">{{itDet.time}}</b>
                 </div>
               </li>
             </ul>
@@ -139,7 +139,7 @@
                   <li v-for="(item,index) in itemPlayer2"
                       v-if="item.lineUp"
                       :class="{selectActive:selActive == '2-'+(index+1)+''}"
-                      @click="selectActive(2,index+1)"
+                      @click.prevent="selectActive(2,index+1)"
                       v-longtap="{fn:showDataDet,name:'longTab',it:item,index:'2-'+(index+1)+''}"
                       :player_id="item.id"
                       :key="index">
@@ -163,13 +163,14 @@
       <data-layer ref="dataLayer"></data-layer>
       <toast v-model="toastShow" type="text" :text="toastText"></toast>
       <el-layer ref="layer" @confirm="upData" :text="confirmText" confirmBtnText="确定"></el-layer>
-      <el-layer ref="addLayer" @confirm="configAdd" :text="addText" confirmBtnText="确定">
-        <p class="layerSlot">
-          <input type="text" ref="name" placeholder="名称">
-          <input type="number" ref="playerNum" placeholder="球员号码">
-        </p>
-      </el-layer>
+
     </div>
+    <el-layer ref="addLayer" @confirm="configAdd" :text="addText" confirmBtnText="确定">
+      <p class="layerSlot">
+        <input type="text" ref="name" placeholder="名称">
+        <input type="number" ref="playerNum" placeholder="球员号码">
+      </p>
+    </el-layer>
   </div>
 </template>
 <script>
@@ -179,9 +180,8 @@
   import ElLayer from '../../base/elLayer/elLayer.vue'
   import DataLayer from '../../base/elLayer/dataLayer.vue'
   import MajorRec from './majorRec.vue'
-  import {formatTime,filterFn} from '../../common/js/util'
+  import {formatTime,filterFn,copy} from '../../common/js/util'
   import {addClass, removeClass} from '../../common/js/dom'
-  import {setStorage} from '../../common/js/cache'
   import {setOperRecMixin,operMixin} from '../../common/js/mixin'
   import {Toast} from 'vux'
   export default {
@@ -207,11 +207,35 @@
       _this.orientationFun();
     },
     methods: {
+      nextSection(){
+        if(this.matchStatus == 1){this.pause()}
+        if(this.section == 5){
+          return;
+        }
+        var section = this.section+1;
+        this.setSection(section);
+        this.nowMatchTime = this.matchTime[this.section] || 0;
+        var matchTime = copy(this.matchTime);
+        matchTime[this.section]= this.nowMatchTime;
+        this.saveMatchTime(matchTime);
+      },
+      preSection(){
+        if(this.matchStatus == 1){this.pause()}
+        if(this.section == 1){
+          return;
+        }
+        var section = this.section-1;
+        this.setSection(section);
+        this.nowMatchTime = this.matchTime[this.section] || 0;
+        var matchTime = copy(this.matchTime);
+        matchTime[this.section]= this.nowMatchTime;
+        this.saveMatchTime(matchTime);
+      },
       orientationFun() {
         var _this = this;
         var _width = screen.width;
         var _height = screen.height;
-        if (window.orientation == 180 || window.orientation == 0) {
+        if (window.orientation == 180 || window.orientation == 0||_height>_width) {
           addClass(_this.$refs.changeScr, 'changeScr')
           removeClass(_this.$refs.changeScr, 'changeHcr')
           if(_this.$refs.changeScr){
@@ -225,9 +249,9 @@
               _this.$refs.changeScr.style = `width:${htmlHeight}px; height:${_width}px;transform-origin:center center;
             transform:rotate(90deg) translate(${(htmlHeight-_width)/2}px,${(htmlHeight-_width)/2}px);`;
             }
-          },200)
+          },100)
         }
-        if (window.orientation == 90 || window.orientation == -90) {
+        if (window.orientation == 90 || window.orientation == -90||_height<_width) {
           removeClass(_this.$refs.changeScr, 'changeScr')
           addClass(_this.$refs.changeScr, 'changeHcr')
           if(_this.$refs.changeScr){
@@ -239,7 +263,7 @@
             if(_this.$refs.changeScr){
               _this.$refs.changeScr.style = `width:${_width}px; height:${htmlHeight}px;`;
             }
-          },200)
+          },100)
         }
       },
       vuetap(s){
@@ -279,12 +303,6 @@
         //this.$refs.recDet.show();
         this.$router.push({path:'/matchSett/major/majorRec'})
       },
-      nextSection(){
-        console.log('是否进入下节比赛')
-      },
-      preSection(){
-        console.log('是否进入上节比赛')
-      },
       operationClick(index, i, item){
         this.liPause = false;
         this.liFoul = false;
@@ -323,19 +341,8 @@
           pause:item.pause
         })
       },
+    },
 
-    },
-    watch: {
-      nowMatchTime(){
-        if (this.nowMatchTime >= matchLength * 60) {
-          this.pause();
-          this.addOneRec({operation: `第${this.section}节比赛结束`, type: 'end'});
-          this.saveMatchTime({time: 0, section: this.section + 1});
-        } else {
-          setStorage('matchTime', {time: this.nowMatchTime, section: this.section})
-        }
-      }
-    },
     components: {
       MHeader,
       ElLayer,
@@ -450,7 +457,7 @@
     display: flex;
     height:17.7%;
     color: #999;
-    font-size: 14px;
+    font-size: 13px;
     box-sizing: border-box;
     border-top:1px solid #e6e6e6;
     border-bottom:1px solid #e6e6e6;
@@ -520,11 +527,11 @@
     justify-content: center;
     align-items: center;
     background: #fff;
-    padding-left:5px;
-    padding-right:7px;
+    padding-left:3px;
+    padding-right:3px;
   }
   .list3 .title-name{
-    padding-left:7px; padding-right:5px;
+    padding-left:3px; padding-right:3px;
   }
   .major-details .title-name span {
     text-align: center;
@@ -551,11 +558,14 @@
   .major-details .title-in p {
     flex:1; display: flex;
     justify-content: center;
+    box-sizing: border-box;
+    margin:0 2px;
     align-items: center;
   }
 
   .major-details .title-in input {
-    width: 29px;
+    width: 50%;
+    box-sizing: border-box;
     line-height: 21px;
     font-size: 12px;
     text-align: center;
@@ -566,7 +576,8 @@
   .major-details .title-in p span {
     background: #fff;
     font-size: 12px;
-    width: 29px;
+    width: 50%;
+    box-sizing: border-box;
     overflow: hidden;
     white-space: nowrap;
     line-height: 21px;
@@ -702,4 +713,5 @@
     font-family: 'PingFang SC';
     border:1px solid #ff8201;
   }
+
 </style>

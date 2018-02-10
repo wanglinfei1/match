@@ -80,10 +80,10 @@
     background-color: rgba(0,0,0,0.4);
   }
    .layer.layer-fade-enter-active{
-     animation: layer-fadein 0.3s
+     animation: layer-fadein 0.2s
    }
   .layer.layer-fade-enter-active .layer-content{
-    animation: layer-zoom 0.3s
+    animation: layer-zoom 0.2s
   }
   .layer .layer-wrapper{
     position: absolute;

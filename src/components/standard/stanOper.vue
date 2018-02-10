@@ -183,17 +183,6 @@
         this.$router.push({path:'/matchSett/standard/operRec'})
       },
     },
-    watch: {
-      nowMatchTime(){
-        if (this.nowMatchTime >= matchLength * 60) {
-          this.pause();
-          this.addOneRec({operation: `第${this.section}节比赛结束`, type: 'end'});
-          this.saveMatchTime({time: 0, section: this.section + 1});
-        } else {
-          setStorage('matchTime', {time: this.nowMatchTime, section: this.section})
-        }
-      }
-    },
     components: {
       MHeader,
       ElLayer,

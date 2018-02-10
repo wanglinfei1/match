@@ -2,8 +2,9 @@
  * Created by wanglinfei on 2017/9/8.
  */
 import {mapGetters, mapMutations, mapActions} from 'vuex'
-import {filterFn,formatTime} from '../../common/js/util'
+import {filterFn,formatTime,copy} from '../../common/js/util'
 import {itemColor, matchLength,sectionArr,operation} from '../../common/js/config'
+import {loadStorage,setStorage} from '../../common/js/cache'
 
 export const setOperRecMixin = {
   computed: {
@@ -98,7 +99,6 @@ export const operMixin ={
       formatTime:formatTime,
       selActive: '',
       itemColor:itemColor,
-      section:1,
       sectionArr: sectionArr,
     }
   },
@@ -109,12 +109,13 @@ export const operMixin ={
     },
     ...mapGetters([
       'matchTime',
+      'section',
       'matchStatus',
     ])
   },
   created(){
-    this.nowMatchTime = this.matchTime.time || 0;
-    this.section = this.matchTime.section || 1;
+    this.nowMatchTime = this.matchTime[this.section] || 0;
+    /*this.section = this.matchTime.section || 1;*/
     var length1 = filterFn(this.itemPlayer1,'lineUp',true).length;
     var length2 = filterFn(this.itemPlayer2,'lineUp',true).length;
     if(length1==0||length2==0){
@@ -128,11 +129,16 @@ export const operMixin ={
       clearInterval(this.timer);
       if (this.nowMatchTime >= matchLength * 60) {
         this.toastShow = true;
-        this.toastText = '进入下节比赛';
-        this.nowMatchTime = 0;
-        this.section = this.section +1 ;
+        this.toastText = '请进入下节比赛';
+        this.setMatchStatus(0);
+        /*var section = this.section+1;
+        this.setSection(section);*/
+        return;
       }
-      this.saveMatchTime({time: this.nowMatchTime, section: this.section});
+      this.nowMatchTime = this.matchTime[this.section] || 0;
+      var matchTime = copy(this.matchTime);
+      matchTime[this.section]= this.nowMatchTime;
+      this.saveMatchTime(matchTime);
       this.timer = setInterval(() => {
         this.nowMatchTime++;
       }, 1e3)
@@ -140,7 +146,9 @@ export const operMixin ={
     pause(){
       if(this.matchStatus == 0){return;}
       this.setMatchStatus(0);
-      this.saveMatchTime({time: this.nowMatchTime, section: this.section});
+      var matchTime = copy(this.matchTime);
+      matchTime[this.section]= this.nowMatchTime;
+      this.saveMatchTime(matchTime);
       clearInterval(this.timer)
     },
     configAdd(type){
@@ -179,6 +187,7 @@ export const operMixin ={
       }
     },
     addOneRec(rec){
+      if (this.nowMatchTime >= matchLength * 60) {return;};
       rec.section=this.section;
       rec.time = this.nowMatchTime;
       rec.matchStartTime = this.matchStartTime;
@@ -206,6 +215,7 @@ export const operMixin ={
     ...mapMutations({
       'setMatchTime': 'SET_MATCHTIME',
       'setMatchStatus': 'SET_MATCHSTATUS',
+      'setSection':'SET_SECTION'
     }),
     ...mapActions([
       'addPlayerAct',
@@ -216,5 +226,22 @@ export const operMixin ={
   },
   beforeDestroy(){
     this.pause()
+  },
+  watch: {
+    nowMatchTime(){
+      if (this.nowMatchTime >= matchLength * 60) {
+        this.pause();
+        this.addOneRec({operation: `第${this.section}节比赛结束`, type: 'end'});
+        /*var section = this.section+1;
+        this.setSection(section);
+        var matchTime = copy(this.matchTime);
+        matchTime[this.section]=matchTime[this.section]||0;
+        this.saveMatchTime(matchTime);
+        this.nowMatchTime = this.matchTime[this.section] || 0;*/
+      }
+      var matchTime = loadStorage('matchTime',{});
+      matchTime[this.section] = this.nowMatchTime;
+      setStorage('matchTime', matchTime)
+    }
   },
 }
