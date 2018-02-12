@@ -34,12 +34,12 @@
       <p @click="addPlayer">+ 添加球员</p>
     </div>
     <div class="waiver">
-      <p @click="waiverFn">弃权</p>
+      <p @click="waiverFn">弃  权</p>
     </div>
     <p class="Notes">注：弃权比分默认20：0，弃权积0分</p>
     <el-layer ref="layer" @confirm="configAdd" :text="confirmText" confirmBtnText="确定">
       <p class="layerSlot">
-        <input type="text" ref="name" placeholder="名称">
+        <input type="text" ref="name" placeholder="球员名字">
         <input type="number" ref="playerNum" placeholder="球员号码">
       </p>
     </el-layer>
@@ -148,7 +148,7 @@
     line-height:37px;
     text-align: center;
     color:#fff;
-    background:#2764bf;
+    background:#ff8201;
     margin: auto;
   }
   .Notes{
@@ -165,10 +165,10 @@
   .Player span{
     height:32px; width:1rem;
     line-height: 32px; margin-right: 0.2rem;
-    background:#cecece; color:#fff;
+    background:#cccccc; color:#fff;
   }
   .Player .red{
-    background:red;
+    background:#dd0000;
   }
   .Player input{
     border:none;
@@ -176,6 +176,9 @@
     box-sizing: border-box;
     line-height: 30px;
     text-align: center;
+  }
+  .Player input:nth-of-type(1){
+    background: #fafafa;
   }
   .Player input.num{
     border-left:1px solid #e6e6e6;
@@ -194,10 +197,11 @@
     margin:0 15px;
   }
   .itemSet .title {
-  text-align: center;
-  line-height:53px;
-  color:#5d5d5d;
-  font-size: 12px;
+    text-align: center;
+    line-height:53px;
+    color:#333333;
+    font-family: 'AdobeHeitiSid';
+    font-size: 13px;
 }
 .sexSett{
   display: flex;
@@ -209,6 +213,7 @@
 .sexSett  .tit {
   color:#333333;
   margin:0 12px 0 10px;
+  font-size: 13px;
 }
 .sexList{
   flex:1

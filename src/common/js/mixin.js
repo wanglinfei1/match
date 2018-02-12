@@ -123,6 +123,32 @@ export const operMixin ={
     }
   },
   methods:{
+    changeSection(section){
+      if(section <= 0){
+        return;
+      }else if(section >=6){
+        return;
+      }
+      if(this.matchStatus == 1){this.pause()}
+      this.setSection(section);
+      var timeNow = this.matchTime[this.section];
+      if(!timeNow&&timeNow!==0){
+        this.nowMatchTime = 0;
+        this.addOneRec({operation: '开始比赛', type: 'start'});
+      }
+      this.nowMatchTime = timeNow || 0;
+      var matchTime = copy(this.matchTime);
+      matchTime[this.section]= this.nowMatchTime;
+      this.saveMatchTime(matchTime);
+    },
+    nextSection(){
+      var section = this.section+1;
+      this.changeSection(section)
+    },
+    preSection(){
+      var section = this.section-1;
+      this.changeSection(section)
+    },
     start(){
       if(this.timer&&this.matchStatus == 1){return;}
       this.setMatchStatus(1);
@@ -135,7 +161,7 @@ export const operMixin ={
         this.setSection(section);*/
         return;
       }
-      this.nowMatchTime = this.matchTime[this.section] || 0;
+      this.nowMatchTime = (this.matchTime[this.section]+0.1) || 0;
       var matchTime = copy(this.matchTime);
       matchTime[this.section]= this.nowMatchTime;
       this.saveMatchTime(matchTime);
@@ -240,8 +266,75 @@ export const operMixin ={
         this.nowMatchTime = this.matchTime[this.section] || 0;*/
       }
       var matchTime = loadStorage('matchTime',{});
-      matchTime[this.section] = this.nowMatchTime;
+      matchTime[this.section] = Math.floor(this.nowMatchTime);
       setStorage('matchTime', matchTime)
     }
   },
+}
+
+export const recMiXin = {
+  data() {
+    return {
+      record:'操作记录',
+      showFlag:true,
+      rightIcon:'',
+      itemColor:itemColor,
+      sectionArr: sectionArr,
+      operRecTab:['全部','得分','犯规'],
+      currentIndex:0,
+      formatTime:formatTime,
+      scrollToEndFlag:false
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'radio1',
+      'radio2',
+      'operationRec'
+    ]),
+    operRec() {
+      var operationRec = this.operationRec.slice();
+      operationRec.sort(function(n,m){
+        return ((m.section -1)*matchLength*60+m.time) - ((n.section -1)*matchLength*60+n.time)
+      })
+      return operationRec;
+    },
+    scoreOperRec(){
+      var operationRec = this.operationRec;
+      var scoreOperRec = [];
+      for(var i =0;i<operationRec.length;i++){
+        if(operationRec[i].type == 'score'||operationRec[i].type == 'start'||operationRec[i].type == 'end'){
+          scoreOperRec.push(operationRec[i])
+        }
+      }
+      scoreOperRec.sort(function(n,m){
+        return ((m.section -1)*matchLength*60+m.time) - ((n.section -1)*matchLength*60+n.time)
+      })
+      return scoreOperRec;
+    },
+    foulOperRec(){
+      var operationRec = this.operationRec;
+      var foulOperRec = [];
+      for(var i =0;i<operationRec.length;i++){
+        if(operationRec[i].type == 'foul'||operationRec[i].type == 'start'||operationRec[i].type == 'end'){
+          foulOperRec.push(operationRec[i])
+        }
+      }
+      foulOperRec.sort(function(n,m){
+        return ((m.section -1)*matchLength*60+m.time) - ((n.section -1)*matchLength*60+n.time)
+      })
+      return foulOperRec;
+    }
+  },
+  methods:{
+    deleOperRec(item){
+      this.deleOneOperRec(item);
+    },
+    selectItem(item,index){
+      this.currentIndex = index;
+    },
+    ...mapActions([
+      'deleOneOperRec'
+    ]),
+  }
 }

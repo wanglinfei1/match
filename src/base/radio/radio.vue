@@ -50,7 +50,11 @@
     align-items: center;
   }
   .radio-item span{
-    color:#989a97;
+    color:#333333;
+  }
+  .icon-duihao{
+    background: url("../../common/image/duihao.png") no-repeat center;
+    background-size: 70%;
   }
   .radio-icon{
     margin-right:10px;
@@ -59,7 +63,7 @@
     line-height: 19px;
     text-align: center;
     color:#333333;
-    background: #fff;
+    background-color: #fafafa;
     border:1px solid #999999;
   }
 </style>

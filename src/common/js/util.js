@@ -59,7 +59,7 @@ export function formatDate(date, fmt) {
 };
 export function formatTime(time) {
   var min = parseInt(time/60);
-  var sec = time%60;
+  var sec = Math.floor(time%60);
   var str = (min>=10?min+'':'0'+min)+':'+(sec>=10?sec+'':'0'+sec)
   return str
 }

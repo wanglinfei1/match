@@ -12,11 +12,13 @@
               <div class="title-in">
                 <p class="clearfix">
                   <span class="floatL">犯规</span>
-                  <input type="text" :value="foul1" class="floatL" readonly="readonly">
+                  <span class="floatL">{{foul1}}</span>
+                  <!--<input type="text" :value="foul1" class="floatL" readonly="readonly">-->
                 </p>
                 <p class="clearfix">
                   <span class="floatL">暂停</span>
-                  <input type="text" :value="pauseNum1" class="floatL" readonly="readonly">
+                  <span class="floatL">{{pauseNum1}}</span>
+                  <!--<input type="text" :value="pauseNum1" class="floatL" readonly="readonly">-->
                 </p>
               </div>
               <div class="title-name">
@@ -98,7 +100,7 @@
                   </div>
                   <b>
                     <i class="i1">{{formatTime(operRecLast.time||0)}}</i>
-                    <i class="iconfont icon-shanchu"></i>
+                    <i></i>
                   </b>
                 </div>
                 <span @click.prevent="operationClick(index,1,item[1])">{{item[1].name}}</span>
@@ -120,11 +122,13 @@
               <div class="title-in">
                 <p class="clearfix">
                   <span class="floatL">犯规</span>
-                  <input type="text" :value="foul2" class="floatL" readonly="readonly">
+                  <span class="floatL">{{foul2}}</span>
+                  <!--<input type="text" :value="foul2" class="floatL" readonly="readonly">-->
                 </p>
                 <p class="clearfix">
                   <span class="floatL">暂停</span>
-                  <input type="text" :value="pauseNum2" class="floatL" readonly="readonly">
+                  <span class="floatL">{{pauseNum2}}</span>
+                 <!-- <input type="text" :value="pauseNum2" class="floatL" readonly="readonly">-->
                 </p>
               </div>
               <div class="title-name">
@@ -207,30 +211,6 @@
       _this.orientationFun();
     },
     methods: {
-      nextSection(){
-        if(this.matchStatus == 1){this.pause()}
-        if(this.section == 5){
-          return;
-        }
-        var section = this.section+1;
-        this.setSection(section);
-        this.nowMatchTime = this.matchTime[this.section] || 0;
-        var matchTime = copy(this.matchTime);
-        matchTime[this.section]= this.nowMatchTime;
-        this.saveMatchTime(matchTime);
-      },
-      preSection(){
-        if(this.matchStatus == 1){this.pause()}
-        if(this.section == 1){
-          return;
-        }
-        var section = this.section-1;
-        this.setSection(section);
-        this.nowMatchTime = this.matchTime[this.section] || 0;
-        var matchTime = copy(this.matchTime);
-        matchTime[this.section]= this.nowMatchTime;
-        this.saveMatchTime(matchTime);
-      },
       orientationFun() {
         var _this = this;
         var _width = screen.width;
@@ -440,11 +420,18 @@
     flex-direction: column;
     justify-content: center;
     text-align: right;
+    align-items: flex-end;
     padding-right: 10px;
     box-sizing: border-box;
     font-size: 14px;
     color:#666666;
     line-height: 2;
+  }
+  .major-details .operation b i:nth-of-type(2){
+    width:16px; height:16px;
+    background: url("../../common/image/delete.png") no-repeat;
+    background-size: contain;
+    margin:6px 0;
   }
   .playDown{
     background: #fff;
@@ -562,18 +549,7 @@
     margin:0 2px;
     align-items: center;
   }
-
-  .major-details .title-in input {
-    width: 50%;
-    box-sizing: border-box;
-    line-height: 21px;
-    font-size: 12px;
-    text-align: center;
-    border: 1px solid #e6e6e6;
-    border-left:none;
-  }
-
-  .major-details .title-in p span {
+  .major-details .title-in input,.major-details .title-in p span {
     background: #fff;
     font-size: 12px;
     width: 50%;
@@ -586,7 +562,9 @@
     color: #999999;
     border: 1px solid #e6e6e6;
   }
-
+  .major-details .title-in p span:nth-of-type(2){
+    margin-left: -1px;
+  }
   .major-details .list-title {
     height:19.2%;
     position: relative;
@@ -618,7 +596,7 @@
   .major-details .list2 ul {
     display: flex;
     margin-left:3px;
-    margin-right:3px;
+    /*margin-right:3px;*/
     box-sizing: border-box;
     width: 100%;
     flex-direction: column;
@@ -712,6 +690,7 @@
     font-weight: bold;
     font-family: 'PingFang SC';
     border:1px solid #ff8201;
+    box-sizing: border-box;
   }
 
 </style>

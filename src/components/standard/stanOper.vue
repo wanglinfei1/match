@@ -53,7 +53,9 @@
       </div>
       <div class="list list2">
         <ul>
-          <li class="li1">
+          <li class="li1"
+              v-swiperight="nextSection"
+              v-swipeleft="preSection">
             <p class="p1">{{sectionArr[section-1]}}</p>
             <p class="p2">右划进入下一节</p>
           </li>
@@ -118,8 +120,6 @@
   </div>
 </template>
 <script>
-  import OperRec from './operRec.vue'
-  import MajorRec from '../major/majorRec.vue'
   import {itemColor, matchLength,sectionArr,operation2} from '../../common/js/config'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import MHeader from '../../base/m-header/m-header'
@@ -186,8 +186,7 @@
     components: {
       MHeader,
       ElLayer,
-      Toast,
-      MajorRec
+      Toast
     }
   }
 </script>
@@ -213,6 +212,8 @@
     height:60px;
     background: #eee;
     display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .operation div{
     flex:1;
@@ -226,11 +227,11 @@
     align-items: left;
   }
   .operation i{
-    width:68px;
-    font-size:24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width:18px;
+    height: 18px;
+    background: url("../../common/image/delete.png") no-repeat center;
+    background-size: contain;
+    padding-right: 0.3rem;
   }
   .addPlyer{
     margin-left:10px;
