@@ -7,8 +7,6 @@ export const SET_ITEMPLAYER2 = 'SET_ITEMPLAYER2'
 
 export const SET_RADIO = 'SET_RADIO'
 
-export const SET_ID = 'SET_ID'
-
 export const SET_MATCHTIME = 'SET_MATCHTIME'
 
 export const SET_MATCHSTATUS = 'SET_MATCHSTATUS'

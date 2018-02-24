@@ -111,6 +111,7 @@
     <router-view></router-view>
     <toast v-model="toastShow" type="text" :text="toastText"></toast>
     <el-layer ref="layer" @confirm="upData" :text="confirmText" confirmBtnText="确定"></el-layer>
+    <el-layer ref="layerSection" @confirm="confimSection" :text="confimSectionText" confirmBtnText="确定"></el-layer>
     <el-layer ref="addLayer" @confirm="configAdd" :text="addText" confirmBtnText="确定">
       <p class="layerSlot">
         <input type="text" ref="name" placeholder="名称">

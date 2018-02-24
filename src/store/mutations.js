@@ -19,9 +19,6 @@ const moutations = {
       saverRadio('radio2',radio)
     }
   },
-  [type.SET_ID](state, ID) {
-    state.ID = ID
-  },
   [type.SET_MATCHTIME](state, matchTime) {
     state.matchTime = matchTime
   },

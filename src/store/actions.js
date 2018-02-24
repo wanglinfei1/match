@@ -2,7 +2,7 @@
  * Created by wanglinfei on 2017/8/10.
  */
 import * as type from './mutations-type'
-import {savePlayers,delePlayer,changePlayer,saveID,saveTime,saveRec,deleOneRec} from '../common/js/cache'
+import {savePlayers,delePlayer,changePlayer,saveTime,saveRec,deleOneRec} from '../common/js/cache'
 import UUID from '../common/js/uuid-v4'
 function findIndex(list, song) {
   return list.findIndex((item) => {

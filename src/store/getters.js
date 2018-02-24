@@ -9,8 +9,6 @@ export const radio1 = state => state.radio1
 
 export const radio2 = state => state.radio2
 
-export const ID = state => state.ID
-
 export const matchTime = state => state.matchTime
 
 export const section = state => state.section

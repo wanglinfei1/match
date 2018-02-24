@@ -79,7 +79,7 @@
                       @click.prevent="operationClick(index,i,it)"
                       :key="i">{{it.name}}</span>
                 <div class="liFoul" v-if="index==2" v-show="liFoul" ref="liFoul">
-                  <b v-tap="liFoulHide">返回</b>
+                  <b @click.prevent="liFoulHide">返回</b>
                   <b @click.prevent="operationClick(2,0,itDet)" v-for="itDet in item[0].foulDet">{{itDet.name}}</b>
                 </div>
               </li>
@@ -105,7 +105,7 @@
                 </div>
                 <span @click.prevent="operationClick(index,1,item[1])">{{item[1].name}}</span>
                 <div class="liFoul" v-show="liPause" ref="liPause">
-                  <b v-tap="liPauseHide">返回</b>
+                  <b @click.prevent="liPauseHide">返回</b>
                   <b v-for="itDet in item[0].pauseDet"
                      @click.prevent="operationClick(index,0,itDet)">{{itDet.time}}</b>
                 </div>
@@ -167,7 +167,7 @@
       <data-layer ref="dataLayer"></data-layer>
       <toast v-model="toastShow" type="text" :text="toastText"></toast>
       <el-layer ref="layer" @confirm="upData" :text="confirmText" confirmBtnText="确定"></el-layer>
-
+      <el-layer ref="layerSection" @confirm="confimSection" :text="confimSectionText" confirmBtnText="确定"></el-layer>
     </div>
     <el-layer ref="addLayer" @confirm="configAdd" :text="addText" confirmBtnText="确定">
       <p class="layerSlot">
@@ -178,15 +178,15 @@
   </div>
 </template>
 <script>
-  import {itemColor, matchLength,sectionArr,operation} from '../../common/js/config'
+  import {itemColor, matchLength,sectionArr,operation} from '@/common/js/config'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
-  import MHeader from '../../base/m-header/m-header'
-  import ElLayer from '../../base/elLayer/elLayer.vue'
-  import DataLayer from '../../base/elLayer/dataLayer.vue'
+  import MHeader from '@/base/m-header/m-header'
+  import ElLayer from '@/base/elLayer/elLayer.vue'
+  import DataLayer from '@/base/elLayer/dataLayer.vue'
   import MajorRec from './majorRec.vue'
-  import {formatTime,filterFn,copy} from '../../common/js/util'
-  import {addClass, removeClass} from '../../common/js/dom'
-  import {setOperRecMixin,operMixin} from '../../common/js/mixin'
+  import {formatTime,filterFn,copy} from '@/common/js/util'
+  import {addClass, removeClass} from '@/common/js/dom'
+  import {setOperRecMixin,operMixin} from '@/common/js/mixin'
   import {Toast} from 'vux'
   export default {
     mixins: [setOperRecMixin,operMixin],
@@ -297,7 +297,14 @@
           this.toastText = '请选择球员';
           return;
         }
-        if (index == 3 && i == 0) {this.pause();} else {this.start();}
+        if (index == 3 && i == 0) {
+          if(this.matchStatus==0){
+            this.toastShow = true;
+            this.toastText = '比赛已暂停';
+            return;
+          }
+          this.pause();
+        } else {this.start();}
         var itemType = this.selActive.split('-')||0;
         var itemName = this.itemName[itemType[0] - 1]||0;
         var name = '',num = '',playerId ='';
@@ -476,8 +483,6 @@
   }
   .major-details .playerList li {
     height:40px;
-    margin-left: 5px;
-    margin-right:7px;
     position: relative;
     display: flex;
     font-size: 14px;
@@ -485,6 +490,8 @@
     align-items: center;
     box-sizing: border-box;
     color: #999;
+    margin-left: 5px;
+    margin-right:7px;
     border-bottom: 1px solid #e6e6e6;
   }
   .major-details .list3 .playerList li{

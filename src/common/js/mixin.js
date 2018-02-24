@@ -2,9 +2,9 @@
  * Created by wanglinfei on 2017/9/8.
  */
 import {mapGetters, mapMutations, mapActions} from 'vuex'
-import {filterFn,formatTime,copy} from '../../common/js/util'
-import {itemColor, matchLength,sectionArr,operation} from '../../common/js/config'
-import {loadStorage,setStorage} from '../../common/js/cache'
+import {filterFn,formatTime,copy} from '@/common/js/util'
+import {itemColor, matchLength,sectionArr,operation} from '@/common/js/config'
+import {loadStorage,setStorage} from '@/common/js/cache'
 
 export const setOperRecMixin = {
   computed: {
@@ -93,6 +93,7 @@ export const operMixin ={
       toastShow:false,
       toastText:'',
       confirmText:'数据上传成功，是否结束比赛？',
+      confimSectionText:'确定进入下一节比赛吗？',
       addText:'',
       timer:null,
       nowMatchTime:'0',
@@ -124,30 +125,41 @@ export const operMixin ={
   },
   methods:{
     changeSection(section){
-      if(section <= 0){
-        return;
-      }else if(section >=6){
-        return;
-      }
       if(this.matchStatus == 1){this.pause()}
       this.setSection(section);
-      var timeNow = this.matchTime[this.section];
+      var matchTime = loadStorage('matchTime',{});
+      var timeNow = matchTime[this.section];
       if(!timeNow&&timeNow!==0){
         this.nowMatchTime = 0;
         this.addOneRec({operation: '开始比赛', type: 'start'});
       }
       this.nowMatchTime = timeNow || 0;
-      var matchTime = copy(this.matchTime);
-      matchTime[this.section]= this.nowMatchTime;
-      this.saveMatchTime(matchTime);
+      this.saveMatchTime(this.section,this.nowMatchTime);
+    },
+    confimSection(section){
+      this.changeSection(section);
+      this.$refs.layerSection.hide()
     },
     nextSection(){
+      var matchTime = loadStorage('matchTime',{});
+      if(!matchTime||!matchTime[1]){
+        this.$vux.toast.text('请开始比赛');
+        return;
+      }
       var section = this.section+1;
-      this.changeSection(section)
+      if(section >=6){
+        return;
+      }
+      this.confimSectionText='确定进入下一节比赛吗？';
+      this.$refs.layerSection.show(section)
     },
     preSection(){
       var section = this.section-1;
-      this.changeSection(section)
+      if(section <= 0){
+        return;
+      }
+      this.confimSectionText='确定进入上一节比赛吗？';
+      this.$refs.layerSection.show(section)
     },
     start(){
       if(this.timer&&this.matchStatus == 1){return;}
@@ -161,10 +173,10 @@ export const operMixin ={
         this.setSection(section);*/
         return;
       }
-      this.nowMatchTime = (this.matchTime[this.section]+0.1) || 0;
-      var matchTime = copy(this.matchTime);
+      var matchTime = loadStorage('matchTime',{});
+      this.nowMatchTime = (matchTime[this.section]+0.1) || 0;
       matchTime[this.section]= this.nowMatchTime;
-      this.saveMatchTime(matchTime);
+      this.saveMatchTime(this.section,matchTime);
       this.timer = setInterval(() => {
         this.nowMatchTime++;
       }, 1e3)
@@ -172,9 +184,9 @@ export const operMixin ={
     pause(){
       if(this.matchStatus == 0){return;}
       this.setMatchStatus(0);
-      var matchTime = copy(this.matchTime);
-      matchTime[this.section]= this.nowMatchTime;
-      this.saveMatchTime(matchTime);
+      var matchTime = loadStorage('matchTime',{});
+      matchTime[this.section]= this.nowMatchTime||0;
+      this.saveMatchTime(this.section,matchTime);
       clearInterval(this.timer)
     },
     configAdd(type){
@@ -201,7 +213,7 @@ export const operMixin ={
         } else {
           this.start();
           var itemType = this.selActive.split('-')[0];
-          var itemName = this.itemName[itemType - 1]
+          var itemName = this.itemName[itemType - 1];
           this.addOneRec({itemName: itemName, operation: '开始比赛', type: 'start', itemType: itemType})
         }
       } else {
