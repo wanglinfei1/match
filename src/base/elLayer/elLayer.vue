@@ -103,7 +103,7 @@
     text-align: center;
     font-size: 14px;
     background: #f5f6f6;
-    color: #999;
+    color: #333;
   }
   .layer-wrapper .layer-content .text.slot{
     padding:6px;background: #f6f6f6;
@@ -118,7 +118,7 @@
     flex: 1;
     line-height: 39px;
     border-top: 1px solid #eee;
-    color: #999;
+    color: #333;
   }
   .major-details .layer-wrapper .layer-content{
     width: 250px;
@@ -129,7 +129,7 @@
     line-height: 20px;
     padding: 10px 0;
     border-top: 1px solid #eee;
-    color: #999;
+    color: #333;
   }
   .major-details .layer-wrapper .layer-content .text{
     line-height: 42px;

@@ -54,8 +54,7 @@
               <li class="li1">
                 <span class="bgColor">{{score1}}</span>
                 <span @click.prevent="timeClick">{{formatTime(nowMatchTime)}}</span>
-                <span v-swiperight="nextSection"
-                      v-swipeleft="preSection">{{sectionArr[section-1]}}</span>
+                <span>{{sectionArr[section-1]}}</span>
                 <span class="bgColor">{{score2}}</span>
               </li>
               <li v-for="(item,index) in operation"
@@ -123,12 +122,10 @@
                 <p class="clearfix">
                   <span class="floatL">犯规</span>
                   <span class="floatL">{{foul2}}</span>
-                  <!--<input type="text" :value="foul2" class="floatL" readonly="readonly">-->
                 </p>
                 <p class="clearfix">
                   <span class="floatL">暂停</span>
                   <span class="floatL">{{pauseNum2}}</span>
-                 <!-- <input type="text" :value="pauseNum2" class="floatL" readonly="readonly">-->
                 </p>
               </div>
               <div class="title-name">
@@ -166,7 +163,7 @@
       <router-view></router-view>
       <data-layer ref="dataLayer"></data-layer>
       <toast v-model="toastShow" type="text" :text="toastText"></toast>
-      <el-layer ref="layer" @confirm="upData" :text="confirmText" confirmBtnText="确定"></el-layer>
+      <el-layer ref="layer" @confirm="upData" :text="confirmText" confirmBtnText="立即结束"></el-layer>
       <el-layer ref="layerSection" @confirm="confimSection" :text="confimSectionText" confirmBtnText="确定"></el-layer>
     </div>
     <el-layer ref="addLayer" @confirm="configAdd" :text="addText" confirmBtnText="确定">
@@ -450,7 +447,7 @@
   .major-details .addPlyer {
     display: flex;
     height:17.7%;
-    color: #999;
+    color: #666;
     font-size: 13px;
     box-sizing: border-box;
     border-top:1px solid #e6e6e6;
@@ -570,7 +567,7 @@
     border: 1px solid #e6e6e6;
   }
   .major-details .title-in p span:nth-of-type(2){
-    margin-left: -1px;
+    margin-left: -1px;color:#333;
   }
   .major-details .list-title {
     height:19.2%;

@@ -8,6 +8,8 @@ import './common/js/vue-touch'
 import  { ToastPlugin } from 'vux'
 Vue.use(ToastPlugin,{position:'middle',time:1000})
 import vueTouch from './common/js/vue-touch'
+import ijax from './common/js/ijax'
+document.domain='sina.com.cn';
 Vue.config.productionTip = false
 fastclick.attach(document.body)
 

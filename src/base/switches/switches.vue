@@ -44,6 +44,9 @@
     background: #fafafa;
     border-bottom: 1px solid #dddddd;
   }
+  .operRecTab.switches .switch-item span{
+    color:#333;
+  }
   .switches .switch-item{
     flex: 1; height:100%;
     text-align: center;

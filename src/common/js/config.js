@@ -4,8 +4,8 @@
 export const PLAY_KEY = '_itemPlayer1__'
 export const PLAY_KEY2 = '_itemPlayer2__'
 export const itemColor = [{text: '深色', color: '#ff4646'}, {text: '浅色', color: '#1656a5'}];
-export const matchLength = 5
-export const sectionArr = ['第一节', '第二节', '第三节', '第四节', '加时']
+export const matchLength = 2
+export const sectionArr = ['第一节', '第二节', '加时']
 export const operation = [
   [
     {name: '前场篮板', type: 'offensive_rebounds'},

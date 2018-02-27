@@ -11,9 +11,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {},
-
     // Various Dev Server settings
-    host: '10.236.55.19', // can be overwritten by process.env.HOST
+    host: 'linfei.sina.com.cn', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

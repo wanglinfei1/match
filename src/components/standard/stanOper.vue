@@ -1,7 +1,7 @@
 <template>
   <div class="player-details">
     <m-header
-      @back="back"
+      @back="toastBack"
       :title="formatTime(nowMatchTime)"
       :rightIcon="rightIcon"
       titleIcon="true"
@@ -53,9 +53,7 @@
       </div>
       <div class="list list2">
         <ul>
-          <li class="li1"
-              v-swiperight="nextSection"
-              v-swipeleft="preSection">
+          <li class="li1">
             <p class="p1">{{sectionArr[section-1]}}</p>
             <p class="p2">右划进入下一节</p>
           </li>

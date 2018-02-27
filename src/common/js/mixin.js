@@ -13,10 +13,10 @@ export const setOperRecMixin = {
       'radio2',
       'itemPlayer1',
       'itemPlayer2',
-      'operationRec',
-      'player_data',
-      'itemName',
-      'matchStartTime'
+      'operationRec',//操作记录
+      'player_data',//球员数据
+      'itemName',//球队名称
+      'matchStartTime'//比赛开始时间，年月日时分
     ])
   },
   mounted() {},
@@ -30,6 +30,7 @@ export const setOperRecMixin = {
     }
   },
   methods: {
+    /*处理数据*/
     setPlayerData(player_data,operItem){
       if(operItem.playerId){
         var id=operItem.playerId;
@@ -92,6 +93,7 @@ export const operMixin ={
     return{
       toastShow:false,
       toastText:'',
+      backcount:0,
       confirmText:'数据上传成功，是否结束比赛？',
       confimSectionText:'确定进入下一节比赛吗？',
       addText:'',
@@ -116,7 +118,6 @@ export const operMixin ={
   },
   created(){
     this.nowMatchTime = this.matchTime[this.section] || 0;
-    /*this.section = this.matchTime.section || 1;*/
     var length1 = filterFn(this.itemPlayer1,'lineUp',true).length;
     var length2 = filterFn(this.itemPlayer2,'lineUp',true).length;
     if(length1==0||length2==0){
@@ -131,6 +132,7 @@ export const operMixin ={
       var timeNow = matchTime[this.section];
       if(!timeNow&&timeNow!==0){
         this.nowMatchTime = 0;
+        this.addOneRec({section:section-1,time:matchTime[section-1],operation: `比赛结束`, type: 'end'});
         this.addOneRec({operation: '开始比赛', type: 'start'});
       }
       this.nowMatchTime = timeNow || 0;
@@ -147,8 +149,10 @@ export const operMixin ={
         return;
       }
       var section = this.section+1;
-      if(section >=6){
+      if(section >=4){
         return;
+      }else if(section >=3){
+
       }
       this.confimSectionText='确定进入下一节比赛吗？';
       this.$refs.layerSection.show(section)
@@ -169,12 +173,10 @@ export const operMixin ={
         this.toastShow = true;
         this.toastText = '请进入下节比赛';
         this.setMatchStatus(0);
-        /*var section = this.section+1;
-        this.setSection(section);*/
         return;
       }
       var matchTime = loadStorage('matchTime',{});
-      this.nowMatchTime = (matchTime[this.section]+0.1) || 0;
+      this.nowMatchTime = (matchTime[this.section]) || 0;
       matchTime[this.section]= this.nowMatchTime;
       this.saveMatchTime(this.section,matchTime);
       this.timer = setInterval(() => {
@@ -225,9 +227,9 @@ export const operMixin ={
       }
     },
     addOneRec(rec){
-      if (this.nowMatchTime >= matchLength * 60) {return;};
-      rec.section=this.section;
-      rec.time = this.nowMatchTime;
+      /*if (this.nowMatchTime >matchLength * 60) {return;}*/
+      rec.section=rec.section||this.section;
+      rec.time = rec.time||this.nowMatchTime;
       rec.matchStartTime = this.matchStartTime;
       this.savOperRec(rec);
     },
@@ -250,6 +252,19 @@ export const operMixin ={
         this.$router.push({path: '/matchSett'})
       }
     },
+    toastBack(){
+     var _this = this;
+      if(this.backcount>0){
+        this.back();
+        return;
+      }
+      this.pause();
+      this.$vux.toast.text('再次点击退出比赛');
+      this.backcount++;
+      setTimeout(function () {
+        _this.backcount = 0;
+      }, 1800);
+    },
     ...mapMutations({
       'setMatchTime': 'SET_MATCHTIME',
       'setMatchStatus': 'SET_MATCHSTATUS',
@@ -266,17 +281,10 @@ export const operMixin ={
     this.pause()
   },
   watch: {
-    nowMatchTime(){
-      if (this.nowMatchTime >= matchLength * 60) {
+    nowMatchTime(newData,oldData){
+      /*if (newData >= matchLength * 60) {
         this.pause();
-        this.addOneRec({operation: `第${this.section}节比赛结束`, type: 'end'});
-        /*var section = this.section+1;
-        this.setSection(section);
-        var matchTime = copy(this.matchTime);
-        matchTime[this.section]=matchTime[this.section]||0;
-        this.saveMatchTime(matchTime);
-        this.nowMatchTime = this.matchTime[this.section] || 0;*/
-      }
+      }*/
       var matchTime = loadStorage('matchTime',{});
       matchTime[this.section] = Math.floor(this.nowMatchTime);
       setStorage('matchTime', matchTime)
@@ -302,7 +310,8 @@ export const recMiXin = {
     ...mapGetters([
       'radio1',
       'radio2',
-      'operationRec'
+      'operationRec',
+      'section'
     ]),
     operRec() {
       var operationRec = this.operationRec.slice();

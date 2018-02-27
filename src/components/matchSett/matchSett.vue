@@ -74,14 +74,14 @@
     data () {
       return {
         rightText :'录入',
-        operType:2,
+        operType:2,//1为标准版，2为专业版
         NoPadd:true,
         layerType:false,
         format:'YYYY-MM-DD HH:mm',
         nowTime:'',
-        currentIndex:0,
-        itemType1:1,
-        itemType2:2,
+        currentIndex:0, //tab当前选项
+        itemType1:1, //球队类型，球队1
+        itemType2:2, //球队类型，球队2
         address:data.address
       }
     },
