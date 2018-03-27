@@ -26,6 +26,11 @@ const OperRec = (resolve) => {
     resolve(module)
   })
 }
+const VueTest = (resolve) => {
+  import('@/components/vueCom/test').then((module) => {
+    resolve(module)
+  })
+}
 Vue.use(Router)
 
 export default new Router({
@@ -33,6 +38,10 @@ export default new Router({
     {
       path: '/',
       redirect: '/matchSett'
+    },
+    {
+      path:'/vuetest',
+      component:VueTest
     },
     {
       path: '/matchSett',

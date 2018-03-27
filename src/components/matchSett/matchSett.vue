@@ -74,7 +74,7 @@
     data () {
       return {
         rightText :'录入',
-        operType:2,
+        operType:1,
         NoPadd:true,
         layerType:false,
         format:'YYYY-MM-DD HH:mm',
